@@ -1,0 +1,16 @@
+{
+  "extends": "eslint:recommended",
+
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+
+  "rules": {
+    "no-undef": 0,
+    "quotes": [2, "single", {"avoidEscape": true}],
+    "no-unused-vars": "warn",
+    "no-useless-escape": "warn"
+  }
+}

@@ -1,0 +1,59 @@
+html {
+  position: relative;
+  box-sizing: border-box;
+  font-size: 10px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -ms-overflow-style: scrollbar;
+  -ms-text-size-adjust: 100%; // stylelint-disable-line  property-no-vendor-prefix
+  min-width: 320px;
+  height: 100%;
+  overflow-x: hidden;
+  background-color: $body-bg;
+  -webkit-overflow-scrolling: auto;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  position: relative;
+  margin: 0;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: auto;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.monitor {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.monitor__screen {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background-color: grey;
+  overflow: hidden;
+}
+
+.monitor__screen img {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: auto;
+  height: 100%;
+  transform: translateX(-50%);
+}
