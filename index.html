@@ -7,12 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone=no">
     <link href="/style.css" rel="stylesheet" media="screen">
+    <script src="https://code.jquery.com/pep/0.4.2/pep.js"></script>
   </head>
   <body>
     <div class="container">
       <div class="monitor">
-        <div class="monitor__screen">
-          <img src="/image.jpg" alt="Screen">
+        <div class="monitor__screen js-monitor" touch-action="none">
+          <div class="monitor__screen-inner" touch-action="none">
+            <img src="/image.jpg" alt="Screen">
+          </div>
         </div>
         <div class="monitor__control-panel">
           <div class="monitor__control-panel-moving">
@@ -20,8 +23,8 @@
           </div>
         </div>
       </div>
-
     </div>
+
     <script src="script.js"></script>
   </body>
 </html>
