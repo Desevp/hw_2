@@ -61,6 +61,7 @@ body {
   -moz-user-select: none
   user-select: none;
   touch-action: none;
+  filter: brightness(0.5);
 }
 
 .monitor__screen img {
@@ -68,6 +69,7 @@ body {
   width: auto;
   height: 100%;
   pointer-events: none;
+
 }
 
 .monitor__screen-indicator {
@@ -88,4 +90,13 @@ body {
 
 .monitor__scale::after{
   content: 'X';
+}
+
+.monitor__brightness {
+  margin-top: 15px;
+  font-size: 20px;
+}
+
+.monitor__brightness::after {
+  content: '%';
 }
