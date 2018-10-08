@@ -1,7 +1,5 @@
 'use strict';
 window.onload = function () {
-  console.log('camera');
-
   let monitorEl = document.querySelector('.js-monitor');
   if (monitorEl) {
     initMonitor(monitorEl);
@@ -25,7 +23,7 @@ function initMonitor(el) {
       curentBright: 0.5
   };
 
-  scaleTextCont.textContent = nodeState.scaleFactor;
+  scaleTextCont.textContent = nodeState.currScale;
   brightnessTextCont.textContent = nodeState.curentBright * 100;
 
   let indicatorWidthElement = createWidthIndicator();
@@ -64,7 +62,6 @@ function initMonitor(el) {
 
         angleStart = angle(t1, t2);
       }
-      console.log('NEW');
   });
 
   screen.addEventListener('pointermove', (event) => {
@@ -133,18 +130,17 @@ function initMonitor(el) {
             scaleTextCont.textContent = Math.round(tempScale);
             nodeState.isScale = true;
           }
-          else {
-            // Rotate
-            if (!nodeState.isScale) {
-              nodeState.isRotate = true;
-              let curAngle = angle(newCoord, newCoord2) - angleStart;
 
-              let brightless = (curAngle > 0)?((nodeState.curentBright >= 1)?1:(nodeState.curentBright * 100 + 2)/100):(nodeState.curentBright <= 0)?0:((nodeState.curentBright * 100 - 2)/100);
+          // Rotate
+          if (!nodeState.isScale) {
+            nodeState.isRotate = true;
+            let curAngle = angle(newCoord, newCoord2) - angleStart;
 
-              nodeState.curentBright = brightless;
-              screenInner.style.webkitFilter = `brightness(${brightless})`;
-              brightnessTextCont.textContent = Math.round(nodeState.curentBright * 100);
-            }
+            let brightless = (curAngle > 0)?((nodeState.curentBright >= 1)?1:(nodeState.curentBright * 100 + 2)/100):(nodeState.curentBright <= 0)?0:((nodeState.curentBright * 100 - 2)/100);
+
+            nodeState.curentBright = brightless;
+            screenInner.style.webkitFilter = `brightness(${brightless})`;
+            brightnessTextCont.textContent = Math.round(nodeState.curentBright * 100);
           }
         }
       }
