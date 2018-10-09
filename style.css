@@ -62,7 +62,6 @@ body {
   user-select: none;
   touch-action: none;
   filter: brightness(0.5);
-  transition: transform 0.1s;
 }
 
 .monitor__screen img {

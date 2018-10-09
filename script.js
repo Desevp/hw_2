@@ -129,18 +129,16 @@ function initMonitor(el) {
           let tempDistance = Math.abs(distance(gestureArray[0], gestureArray[1]) - distanceStart);
 
           if (!prev.isGest && !prev.delay) {
-            if (((Math.abs(tempAngle) > 0.2) && (Math.abs(tempDistance) < 30) || (Math.abs(tempAngle) > 0.5))) {
+            if (((Math.abs(tempAngle) > 0.2) && (Math.abs(tempDistance) < 20) || (Math.abs(tempAngle) > 0.35))) {
               prev.isGest = 'rotate';
+              return
             }
 
-            if (((tempAngle < 0.15) && (Math.abs(tempDistance) > 35) || (Math.abs(tempDistance) > 60))) {
+            if (((tempAngle < 0.1) && (Math.abs(tempDistance) > 15) || (Math.abs(tempDistance) > 60))) {
               prev.isGest = 'pinch';
+              return
             }
           }
-
-          prev.distance = tempDistance;
-          prev.angle = tempAngle;
-          prev.delay = (prev.delay > 0)?(prev.delay - 1) : 0;
 
           // pinch
           if (prev.isGest === 'pinch') {
@@ -155,8 +153,9 @@ function initMonitor(el) {
               }
             }
 
-            screenInner.style.WebkitTransform = `translateX(${nodeState.startPosition}) scale( ${temp}, ${temp})`;
+            screenInner.style.WebkitTransform = `scale( ${temp}, ${temp})`;
             nodeState.currScale = temp;
+            return;
           }
 
           //Rotate
@@ -168,7 +167,11 @@ function initMonitor(el) {
             nodeState.curentBright = brightless;
             screenInner.style.webkitFilter = `brightness(${brightless})`;
             brightnessTextCont.textContent = Math.round(nodeState.curentBright * 100);
+            return;
           }
+          prev.distance = tempDistance;
+          prev.angle = tempAngle;
+          prev.delay = (prev.delay > 0)?(prev.delay - 1) : 0;
         }
       }
   });
