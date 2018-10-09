@@ -15,11 +15,10 @@ function initMonitor(el) {
 
   const nodeState = {
       startPosition: 0,
-      isScale: false,
       currScale: 1.0,
+      scaleFactor: 1.0,
       maxZoom: 4.0,
       minZoom: 1,
-      isRotate: false,
       curentBright: 0.5
   };
 
@@ -34,6 +33,7 @@ function initMonitor(el) {
   let gestureArray = [];
   let angleStart = 0;
   let distanceStart = 0;
+  let prev = {};
 
   screenInner.addEventListener('pointerdown', (event) => {
       screen.style.transition = 'none';
@@ -48,8 +48,6 @@ function initMonitor(el) {
       }];
 
       if (gestureArray.length === 2) {
-        distanceStart = distance(gestureArray[0], gestureArray[1]);
-
         let t1 = {
           x: gestureArray[0].startX,
           y: gestureArray[0].startY
@@ -60,7 +58,19 @@ function initMonitor(el) {
           y: gestureArray[1].startY
         }
 
+        // Расстояние и угол при первом касании
+
+        distanceStart = distance(gestureArray[0], gestureArray[1]);
         angleStart = angle(t1, t2);
+
+        // Информация о предыдущем событии перемещения
+
+        prev = {
+          distance: distanceStart,
+          angle: angleStart,
+          isGest: false, // удалось ли определить жест (false или String)
+          delay: 10 // пропускаем первые события
+        }
       }
   });
 
@@ -113,27 +123,44 @@ function initMonitor(el) {
             y: gestureArray[1].prevY
           }
 
+          // Поворот или пинч
+
           let tempAngle = Math.abs(angle(newCoord, newCoord2) - angleStart);
           let tempDistance = Math.abs(distance(gestureArray[0], gestureArray[1]) - distanceStart);
 
-          // Pranch
-          if (!nodeState.isRotate && ((tempAngle <= 0.1) && (tempDistance > 20))) {
-            let currScale = distance(gestureArray[0], gestureArray[1]) / distanceStart * nodeState.currScale;
+          if (!prev.isGest && !prev.delay) {
+            if (((Math.abs(tempAngle) > 0.2) && (Math.abs(tempDistance) < 30) || (Math.abs(tempAngle) > 0.5))) {
+              prev.isGest = 'rotate';
+            }
 
-            let tempScale = (currScale < nodeState.minZoom)?nodeState.minZoom:(currScale > nodeState.maxZoom)?nodeState.maxZoom:currScale;
-
-            changeWidthIndicator();
-            changePositionIndicator(nodeState.startPosition - indicatorWidthElement.offsetWidth);
-
-            screenInner.style.WebkitTransform = `translateX(${nodeState.startPosition}) scale( ${tempScale}, ${tempScale})`;
-            nodeState.currScale = tempScale;
-            scaleTextCont.textContent = Math.round(tempScale);
-            nodeState.isScale = true;
+            if (((tempAngle < 0.15) && (Math.abs(tempDistance) > 35) || (Math.abs(tempDistance) > 60))) {
+              prev.isGest = 'pinch';
+            }
           }
 
-          // Rotate
-          if (!nodeState.isScale) {
-            nodeState.isRotate = true;
+          prev.distance = tempDistance;
+          prev.angle = tempAngle;
+          prev.delay = (prev.delay > 0)?(prev.delay - 1) : 0;
+
+          // pinch
+          if (prev.isGest === 'pinch') {
+            let temp = nodeState.currScale = distance(gestureArray[0], gestureArray[1]) / distanceStart * nodeState.scaleFactor;
+
+            if (gestureArray.length === 2) {
+              if (temp > nodeState.maxZoom) {
+                temp = nodeState.maxZoom;
+              }
+              else if (temp < nodeState.minZoom) {
+                temp = nodeState.minZoom;
+              }
+            }
+
+            screenInner.style.WebkitTransform = `translateX(${nodeState.startPosition}) scale( ${temp}, ${temp})`;
+            nodeState.currScale = temp;
+          }
+
+          //Rotate
+          if (prev.isGest === 'rotate') {
             let curAngle = angle(newCoord, newCoord2) - angleStart;
 
             let brightless = (curAngle > 0)?((nodeState.curentBright >= 1)?1:(nodeState.curentBright * 100 + 2)/100):(nodeState.curentBright <= 0)?0:((nodeState.curentBright * 100 - 2)/100);
@@ -156,19 +183,7 @@ function initMonitor(el) {
         gestureArray[0].prevX;
       }
 
-      if (gestureArray.length === 2) {
-        nodeState.isScale = false;
-        nodeState.isRotate = false;
-
-        if (nodeState.currScale > nodeState.maxZoom) {
-          nodeState.currScale = maxZoom;
-        }
-
-        if (nodeState.currScale < nodeState.minZoom) {
-          nodeState.currScale = minZoom;
-        }
-      }
-
+      nodeState.scaleFactor = nodeState.currScale;
       gestureArray.length = 0;
   }
 
