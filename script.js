@@ -155,6 +155,7 @@ function initMonitor(el) {
 
             screenInner.style.WebkitTransform = `scale( ${temp}, ${temp})`;
             nodeState.currScale = temp;
+            scaleTextCont.textContent = Math.round(temp * 100) / 100;
             return;
           }
 
